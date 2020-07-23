@@ -14,6 +14,8 @@ $serviceManager = new ServiceManager(
 
 /** @var Router $router */
 $router = $serviceManager->getInstance(Router::class);
+$router->useTrailingSlash(true);
+
 /** @var Config $config */
 $config = $serviceManager->getInstance(Config::class);
 $routes = $config->getConfig('routes');

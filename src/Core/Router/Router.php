@@ -37,6 +37,11 @@ class Router
     private $defaultAction;
 
     /**
+     * @var bool
+     */
+    private $useTrailingSlash = false;
+
+    /**
      * Router constructor.
      *
      * @param ServiceManagerInterface $serviceManager
@@ -54,6 +59,14 @@ class Router
         $this->server = $server;
         $this->defaultController = $defaultController;
         $this->defaultAction = $defaultAction;
+    }
+
+    /**
+     * @param bool $use
+     */
+    public function useTrailingSlash(bool $use)
+    {
+        $this->useTrailingSlash = $use;
     }
 
     /**
@@ -77,16 +90,21 @@ class Router
 
         // find a matched uri
         foreach ($this->routes as $route) {
-            if(strtolower($route->uri) === $uri
-                    && $method === $route->method) {
+            $routeUri = strtolower($route->uri);
+            $routeUriWithTrailingSlash = $this->useTrailingSlash
+                ? $routeUri . '/'
+                : $routeUri;
 
+            // check uri using the trailing slash
+            if(($routeUri === $uri || $routeUriWithTrailingSlash === $uri)
+                && $method === $route->method) {
                 $controllerName = $route->controller;
                 $action = $route->action;
                 break;
             }
         }
 
-        // process default action
+        // process the default action
         if (!$controllerName && !$action) {
             $controller = $this->
                 serviceManager->getInstance($this->defaultController);
@@ -94,6 +112,7 @@ class Router
             return;
         }
 
+        // process the action for the specific controller
         $controller = $this->
             serviceManager->getInstance($controllerName);
         $controller->{$action}();
