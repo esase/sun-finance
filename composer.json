@@ -1,0 +1,8 @@
+{
+    "name": "esase/sunfinance",
+    "autoload": {
+        "psr-4": {
+            "SunFinance\\": "src/"
+        }
+    }
+}
