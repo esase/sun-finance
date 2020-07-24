@@ -7,6 +7,7 @@ use SunFinance\Modules;
 use SunFinance\Core\ServiceManager\Factory\InvokableFactory;
 
 return [
+    'response'        => 'json',
     'routes'          => [
         [
             'controller' => Modules\Documents\Controllers\Documents::class,
@@ -26,6 +27,7 @@ return [
     'service_manager' => [
         // core
         Http\Request::class                            => Http\Factory\RequestFactory::class,
+        Http\AbstractResponse::class                   => Http\Factory\ResponseFactory::class,
         Mvc\Router::class                              => Mvc\Factory\RouterFactory::class,
         Config\ConfigService::class                    => Config\Factory\ConfigServiceFactory::class,
 

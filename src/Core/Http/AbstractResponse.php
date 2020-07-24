@@ -1,0 +1,53 @@
+<?php
+
+namespace SunFinance\Core\Http;
+
+abstract class AbstractResponse
+{
+    const RESPONSE_OK = 200;
+    const RESPONSE_NOT_FOUND = 404;
+
+    protected $redirectCodes = [
+        self::RESPONSE_OK => 'HTTP/1.1 200 OK',
+        self::RESPONSE_NOT_FOUND => 'HTTP/1.1 404 Not Found'
+    ];
+
+    /**
+     * @var mixed
+     */
+    protected $response;
+
+    /**
+     * @var int
+     */
+    protected $responseCode = self::RESPONSE_OK;
+
+    /**
+     * @param mixed $response
+     */
+    public function setResponse($response)
+    {
+        $this->response = $response;
+    }
+
+    /**
+     * @param int $code
+     */
+    public function setResponseCode(int $code)
+    {
+        $this->responseCode = $code;
+    }
+
+    public abstract function displayResponse();
+
+    /**
+     * @param array $headers
+     */
+    protected function sendHeaders(array $headers)
+    {
+        foreach ($headers as $header) {
+            header($header);
+        }
+    }
+
+}

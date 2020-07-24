@@ -24,12 +24,16 @@ class Documents
 
     public function list()
     {
-        echo 'documents';
+        return [
+            [
+                'name' => 'a'
+            ]
+        ];
     }
 
     public function view()
     {
-        echo 'view document - ' . $this->request->getUriParam('id');
+        return $this->request->getUriParam('id');
     }
 
 }

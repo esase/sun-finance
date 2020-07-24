@@ -1,5 +1,6 @@
 <?php
 
+use SunFinance\Core\Http;
 use SunFinance\Core\Mvc;
 use SunFinance\Modules;
 use SunFinance\Core\Config;
@@ -42,13 +43,23 @@ try {
 
     $route = $router->getMatchedRoute();
 
-    // call the matched controller
+    // create the matched controller
     $controller = $serviceManager->getInstance($route->controller);
-    $controller->{$route->action}();
+
+    /** @var Http\AbstractResponse $response */
+    $response = $serviceManager->getInstance(Http\AbstractResponse::class);
+
+    // process the response
+    try {
+        $response->setResponse($controller->{$route->action}());
+    }
+    catch (Http\Exception\BaseException $e) {
+        $response->setResponseCode($e->getCode());
+    }
+    $response->displayResponse();
 }
 catch (Throwable $e) {
     if (getenv('APPLICATION_ENV') === 'dev') {
         throw $e;
     }
 }
-
