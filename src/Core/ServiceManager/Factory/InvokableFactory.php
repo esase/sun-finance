@@ -2,18 +2,19 @@
 
 namespace SunFinance\Core\ServiceManager\Factory;
 
-use SunFinance\Core\ServiceManager\ServiceManagerInterface;
+
+use SunFinance\Core\ServiceManager\ServiceManager;
 
 class InvokableFactory
 {
     /**
-     * @param ServiceManagerInterface $serviceManager
+     * @param ServiceManager $serviceManager
      * @param string                  $className
      *
      * @return object
      */
     public function __invoke(
-        ServiceManagerInterface $serviceManager,
+        ServiceManager $serviceManager,
         string $className
     ) {
         return new $className();

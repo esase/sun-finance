@@ -5,7 +5,6 @@ namespace SunFinance\Core\ServiceManager;
 use Exception;
 
 class ServiceManager
-    implements ServiceManagerInterface
 {
     /**
      * @var array
@@ -15,24 +14,15 @@ class ServiceManager
     /**
      * @var array
      */
-    private $factories;
-
-    /**
-     * @var array
-     */
     private $configs;
 
     /**
      * ServiceManager constructor.
      *
-     * @param array $factories
      * @param array $configs
      */
-    public function __construct(
-        array $factories,
-        array $configs
-    ) {
-        $this->factories = $factories;
+    public function __construct(array $configs)
+    {
         $this->configs = $configs;
     }
 
@@ -48,13 +38,14 @@ class ServiceManager
         if (isset($this->instances[$name])) {
             return $this->instances[$name];
         }
+
         // create an instance
-        if (!isset($this->factories[$name])) {
+        if (!isset($this->configs['service_manager'][$name])) {
             throw new Exception('Unknown `' . $name. '`class');
         }
 
         // call the factory
-        $instance = new $this->factories[$name]();
+        $instance = new $this->configs['service_manager'][$name]();
         $this->instances[$name] = $instance($this, $name);
 
         return $this->instances[$name];

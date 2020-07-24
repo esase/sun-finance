@@ -4,7 +4,7 @@ namespace SunFinance\Core\Config;
 
 use Exception;
 
-class Config
+class ConfigService
 {
     /**
      * @var array
