@@ -13,8 +13,7 @@ class JsonResponse extends AbstractResponse
             ]
         );
 
-        if ($this->response
-            && $this->responseCode === AbstractResponse::RESPONSE_OK) {
+        if ($this->responseCode === AbstractResponse::RESPONSE_OK) {
             echo json_encode($this->response);
         }
     }
