@@ -2,6 +2,8 @@
 
 namespace SunFinance\Core\Http\Exception;
 
+use SunFinance\Core\Http\AbstractResponse;
+
 class Exception404 extends BaseException {
 
     /**
@@ -9,6 +11,6 @@ class Exception404 extends BaseException {
      */
     public function __construct()
     {
-        parent::__construct('', 404);
+        parent::__construct('', AbstractResponse::RESPONSE_NOT_FOUND);
     }
 }
