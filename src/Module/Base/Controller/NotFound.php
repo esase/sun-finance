@@ -1,6 +1,6 @@
 <?php
 
-namespace SunFinance\Modules\Base\Controllers;
+namespace SunFinance\Module\Base\Controller;
 
 use SunFinance\Core\Http\Exception\Exception404;
 

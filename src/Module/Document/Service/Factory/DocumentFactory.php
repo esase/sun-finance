@@ -1,27 +1,26 @@
 <?php
 
-namespace SunFinance\Modules\Documents\Services\Factory;
+namespace SunFinance\Module\Document\Service\Factory;
 
 use SunFinance\Core\Db\DbService;
 use SunFinance\Core\ServiceManager\ServiceManager;
-use SunFinance\Modules\Documents\Services\Documents;
+use SunFinance\Module\Document\Service\Document;
 use Exception;
 
-class DocumentsFactory
+class DocumentFactory
 {
     /**
      * @param ServiceManager $serviceManager
      *
-     * @return Documents
+     * @return Document
      * @throws Exception
      */
-    public function __invoke(ServiceManager $serviceManager): Documents
+    public function __invoke(ServiceManager $serviceManager): Document
     {
         /** @var  DbService $dbService */
         $dbService = $serviceManager->getInstance(DbService::class);
-        return new Documents(
+        return new Document(
             $dbService
         );
     }
 }
-

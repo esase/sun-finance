@@ -2,7 +2,7 @@
 
 use SunFinance\Core\Http;
 use SunFinance\Core\Mvc;
-use SunFinance\Modules;
+use SunFinance\Module;
 use SunFinance\Core\Config;
 use SunFinance\Core\ServiceManager\ServiceManager;
 
@@ -19,7 +19,7 @@ try {
     $router = $serviceManager->getInstance(Mvc\Router::class);
     $router->setDefaultRoute(
         new Mvc\Route(
-            Modules\Base\Controllers\NotFound::class,
+            Module\Base\Controller\NotFound::class,
             [
                 Http\Request::METHOD_ALL => 'index'
             ]

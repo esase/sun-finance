@@ -1,11 +1,11 @@
 <?php
 
-namespace SunFinance\Modules\Documents\Services;
+namespace SunFinance\Module\Document\Service;
 
 use SunFinance\Core\Db\DbService;
 use PDO;
 
-class Documents
+class Document
 {
     /**
      * @var DbService

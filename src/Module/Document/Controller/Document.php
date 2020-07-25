@@ -1,13 +1,13 @@
 <?php
 
-namespace SunFinance\Modules\Documents\Controllers;
+namespace SunFinance\Module\Document\Controller;
 
 use SunFinance\Core\Http\Request;
-use SunFinance\Modules\Documents\Services;
+use SunFinance\Module\Document\Service;
 use SunFinance\Core\Http\Exception\Exception404;
 use Exception;
 
-class Documents
+class Document
 {
     /**
      * @var Request
@@ -15,7 +15,7 @@ class Documents
     private $request;
 
     /**
-     * @var Services\Documents
+     * @var Service\Document
      */
     private $service;
 
@@ -23,11 +23,11 @@ class Documents
      * Documents constructor.
      *
      * @param Request   $request
-     * @param Services\Documents $service
+     * @param Service\Document $service
      */
     public function __construct(
         Request $request,
-        Services\Documents $service
+        Service\Document $service
     ) {
         $this->request = $request;
         $this->service = $service;
@@ -76,6 +76,4 @@ class Documents
 
         return [];
     }
-
 }
-
