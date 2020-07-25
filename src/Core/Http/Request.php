@@ -10,6 +10,7 @@ class Request
     const METHOD_GET = 'GET';
     const METHOD_PUT = 'PUT';
     const METHOD_DELETE = 'DELETE';
+    const METHOD_ALL = '*';
 
     const BASE_SCRIPT_NAME = '/index.php';
 

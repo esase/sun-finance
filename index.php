@@ -20,7 +20,9 @@ try {
     $router->setDefaultRoute(
         new Mvc\Route(
             Modules\Base\Controllers\NotFound::class,
-            'index'
+            [
+                Http\Request::METHOD_ALL => 'index'
+            ]
         )
     );
 
@@ -32,8 +34,8 @@ try {
         $router->registerRoute(
             new Mvc\Route(
                 $route['controller'],
-                $route['action'],
-                $route['method'],
+                $route['action_list'],
+                $route['method_list'],
                 $route['uri'],
                 $route['uri_params'] ?? [],
                 $route['type'] ?? Mvc\Route::TYPE_LITERAL
@@ -44,14 +46,14 @@ try {
     $route = $router->getMatchedRoute();
 
     // create the matched controller
-    $controller = $serviceManager->getInstance($route->controller);
+    $controller = $serviceManager->getInstance($route->getController());
 
     /** @var Http\AbstractResponse $response */
     $response = $serviceManager->getInstance(Http\AbstractResponse::class);
 
     // process the response
     try {
-        $response->setResponse($controller->{$route->action}());
+        $response->setResponse($controller->{$route->getAction()}());
     }
     catch (Http\Exception\BaseException $e) {
         $response->setResponseCode($e->getCode());

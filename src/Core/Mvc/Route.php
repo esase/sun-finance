@@ -2,8 +2,6 @@
 
 namespace SunFinance\Core\Mvc;
 
-use SunFinance\Core\Http\Request;
-
 class Route
 {
     const TYPE_LITERAL = 'literal';
@@ -12,56 +10,128 @@ class Route
     /**
      * @var string
      */
-    public $controller;
-
-    /**
-     * @var string
-     */
-    public $action;
-
-    /**
-     * @var string
-     */
-    public $method;
-
-    /**
-     * @var string
-     */
-    public $uri;
+    protected $controller;
 
     /**
      * @var array
      */
-    public $uriParams = [];
+    protected $actionList;
+
+    /**
+     * @var string|array
+     */
+    protected $methodList;
 
     /**
      * @var string
      */
-    public $type;
+    protected $uri;
+
+    /**
+     * @var array
+     */
+    protected $uriParams = [];
+
+    /**
+     * @var string
+     */
+    protected $type;
+
+    /**
+     * @var string
+     */
+    protected $action;
 
     /**
      * Route constructor.
      *
      * @param string $controller
-     * @param string $action
-     * @param string $method
+     * @param array  $actionList
+     * @param array  $methodList
      * @param string $uri
      * @param array  $uriParams
      * @param string $type
      */
     public function __construct(
         string $controller,
-        string $action,
-        string $method = Request::METHOD_GET,
+        array $actionList,
+        array $methodList = [],
         string $uri = null,
         array $uriParams = [],
         string $type = self::TYPE_LITERAL
     ) {
         $this->controller = $controller;
-        $this->action = $action;
-        $this->method = $method;
+        $this->actionList = $actionList;
+        $this->methodList = $methodList;
         $this->uri = $uri;
         $this->uriParams = $uriParams;
         $this->type = $type;
+    }
+
+    /**
+     * @return string
+     */
+    public function getController(): string
+    {
+        return $this->controller;
+    }
+
+    /**
+     * @return array
+     */
+    public function getActionList(): array
+    {
+        return $this->actionList;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMethodList(): array
+    {
+        return $this->methodList;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUri(): string
+    {
+        return $this->uri;
+    }
+
+    /**
+     * @return array
+     */
+    public function getUriParams(): array
+    {
+        return $this->uriParams;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAction(): string
+    {
+        return $this->action;
+    }
+
+    /**
+     * @param string $action
+     *
+     * @return $this
+     */
+    public function setAction(string $action): self
+    {
+        $this->action = $action;
+        return $this;
     }
 }

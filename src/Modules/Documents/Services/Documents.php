@@ -50,4 +50,16 @@ class Documents
 
         return $sth->fetch(PDO::FETCH_ASSOC);
     }
+
+    /**
+     * @param int $id
+     */
+    public function deleteOne(int $id)
+    {
+        $sth = $this->dbService->getConnection()->prepare(
+            'DELETE FROM documents WHERE id = :id'
+        );
+        $sth->bindValue(':id', $id, PDO::PARAM_INT);
+        $sth->execute();
+    }
 }

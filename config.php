@@ -17,18 +17,28 @@ return [
     'response'        => 'json',
     'routes'          => [
         [
-            'controller' => Modules\Documents\Controllers\Documents::class,
-            'action'     => 'list',
-            'method'     => Http\Request::METHOD_GET,
-            'uri'        => '/documents'
+            'controller'  => Modules\Documents\Controllers\Documents::class,
+            'action_list' => [
+                Http\Request::METHOD_GET => 'list'
+            ],
+            'method_list' => [
+                Http\Request::METHOD_GET
+            ],
+            'uri'         => '/documents'
         ],
         [
-            'controller' => Modules\Documents\Controllers\Documents::class,
-            'action'     => 'view',
-            'method'     => Http\Request::METHOD_GET,
-            'uri'        => '|^/documents/(?P<id>\d+)$|i',
-            'uri_params' => ['id'],
-            'type'       => Mvc\Route::TYPE_REGEXP
+            'controller'  => Modules\Documents\Controllers\Documents::class,
+            'action_list' => [
+                Http\Request::METHOD_GET    => 'view',
+                Http\Request::METHOD_DELETE => 'delete'
+            ],
+            'method_list' => [
+                Http\Request::METHOD_GET,
+                Http\Request::METHOD_DELETE
+            ],
+            'uri'         => '|^/documents/(?P<id>\d+)$|i',
+            'uri_params'  => ['id'],
+            'type'        => Mvc\Route::TYPE_REGEXP
         ]
     ],
     'service_manager' => [

@@ -57,5 +57,25 @@ class Documents
 
         return $document;
     }
+
+    /**
+     * @return array
+     * @throws Exception404
+     * @throws Exception
+     */
+    public function delete(): array
+    {
+        $id = (int) $this->request->getUriParam('id');
+        $document = $this->service->findOne($id);
+
+        if (!$document) {
+            throw new Exception404();
+        }
+
+        $this->service->deleteOne($id);
+
+        return [];
+    }
+
 }
 

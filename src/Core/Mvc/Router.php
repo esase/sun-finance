@@ -10,17 +10,17 @@ class Router
     /**
      * @var Request
      */
-    private $request;
+    protected $request;
 
     /**
      * @var Route[]
      */
-    private $routes = [];
+    protected $routes = [];
 
     /**
      * @var Route
      */
-    private $defaultRoute;
+    protected $defaultRoute;
 
     /**
      * Router constructor.
@@ -58,23 +58,27 @@ class Router
 
         // find a matched route
         foreach ($this->routes as $route) {
-            switch ($route->type) {
-                case Route::TYPE_LITERAL :
-                    if ($this->isMatchedLiteralRoute($uriPath, $route)) {
-                        return $route;
-                    }
-                    break;
-                case Route::TYPE_REGEXP :
-                    if ($this->isMatchedRegexpRoute($uriPath, $route)) {
-                        return $route;
-                    }
-                    break;
+            if (in_array($this->request->getMethod(), $route->getMethodList())
+                || in_array(Request::METHOD_ALL, $route->getMethodList())) {
+                switch ($route->getType()) {
+                    case Route::TYPE_LITERAL :
+                        if ($this->isMatchedLiteralRoute($uriPath, $route)) {
+                            return $this->initControllerAction($route);
+                        }
+                        break;
+
+                    case Route::TYPE_REGEXP :
+                        if ($this->isMatchedRegexpRoute($uriPath, $route)) {
+                            return $this->initControllerAction($route);
+                        }
+                        break;
+                }
             }
         }
 
         // return a default route
         if ($this->defaultRoute) {
-            return $this->defaultRoute;
+            return $this->initControllerAction($this->defaultRoute);
         }
 
         throw new Exception('Cannot match any routes');
@@ -90,8 +94,7 @@ class Router
         string $uriPath,
         Route $route
     ): bool {
-        return $uriPath === $route->uri
-            && $route->method === $this->request->getMethod();
+        return $uriPath === $route->getUri();
     }
 
     /**
@@ -104,21 +107,47 @@ class Router
         string $uriPath,
         Route $route
     ): bool {
-        if ($route->method === $this->request->getMethod()) {
-            $matches = [];
-            preg_match($route->uri, $uriPath, $matches);
-            if ($matches) {
-                $uriParams = [];
-                // extract uri params
-                foreach ($route->uriParams as $uriParam) {
-                    if (isset($matches[$uriParam])) {
-                        $uriParams[$uriParam] = $matches[$uriParam];
-                    }
+        $matches = [];
+
+        // check if the uri is matched by a regexp
+        preg_match($route->getUri(), $uriPath, $matches);
+        if ($matches) {
+            $uriParams = [];
+
+            // extract uri params
+            foreach ($route->getUriParams() as $uriParam) {
+                if (isset($matches[$uriParam])) {
+                    $uriParams[$uriParam] = $matches[$uriParam];
                 }
-                $this->request->setUriParams($uriParams);
-                return true;
             }
+            // add the found uri params to the request
+            $this->request->setUriParams($uriParams);
+
+            return true;
         }
+
         return false;
+    }
+
+    /**
+     * @param Route $route
+     *
+     * @return Route
+     * @throws Exception
+     */
+    protected function initControllerAction(Route $route): Route
+    {
+        $actions = $route->getActionList();
+
+        // select a controller action related with the http method
+        $action = $actions[$this->request->getMethod()] ??
+            $actions[Request::METHOD_ALL] ?? '';
+
+        if (!$action) {
+            throw new Exception('Cannot find a controller action');
+        }
+
+        $route->setAction($action);
+        return $route;
     }
 }
