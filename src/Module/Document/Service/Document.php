@@ -28,7 +28,7 @@ class Document
     public function findAll(): array
     {
         $sth = $this->dbService->getConnection()->prepare(
-        'SELECT * from documents'
+            'SELECT * from documents'
         );
         $sth->execute();
 
@@ -61,5 +61,23 @@ class Document
         );
         $sth->bindValue(':id', $id, PDO::PARAM_INT);
         $sth->execute();
+    }
+
+    /**
+     * @param string $title
+     * @param string $body
+     *
+     * @return int
+     */
+    public function create(string $title, string $body): int
+    {
+        $sth = $this->dbService->getConnection()->prepare(
+            'INSERT INTO documents SET title = :title, body = :body'
+        );
+        $sth->bindValue(':title', $title, PDO::PARAM_STR);
+        $sth->bindValue(':body', $body, PDO::PARAM_STR);
+        $sth->execute();
+
+        return (int) $this->dbService->getConnection()->lastInsertId();
     }
 }

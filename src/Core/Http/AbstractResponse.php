@@ -6,10 +6,12 @@ abstract class AbstractResponse
 {
     const RESPONSE_OK = 200;
     const RESPONSE_NOT_FOUND = 404;
+    const RESPONSE_BAD_REQUEST = 400;
 
     protected $redirectCodes = [
         self::RESPONSE_OK => 'HTTP/1.1 200 OK',
-        self::RESPONSE_NOT_FOUND => 'HTTP/1.1 404 Not Found'
+        self::RESPONSE_NOT_FOUND => 'HTTP/1.1 404 Not Found',
+        self::RESPONSE_BAD_REQUEST => 'HTTP/1.1 400 Bad Request'
     ];
 
     /**

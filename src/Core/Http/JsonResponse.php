@@ -13,8 +13,22 @@ class JsonResponse extends AbstractResponse
             ]
         );
 
-        if ($this->responseCode === AbstractResponse::RESPONSE_OK) {
-            echo json_encode($this->response);
+        if ($this->response) {
+            echo !$this->isJSON($this->response)
+                ? json_encode($this->response)
+                : $this->response;
         }
+    }
+
+    /**
+     * @param mixed $string
+     *
+     * @return bool
+     */
+    protected function isJSON($string): bool
+    {
+        return is_string($string)
+            && is_array(json_decode($string, true))
+            && (json_last_error() == JSON_ERROR_NONE) ? true : false;
     }
 }

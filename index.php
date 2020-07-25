@@ -57,6 +57,9 @@ try {
     }
     catch (Http\Exception\BaseException $e) {
         $response->setResponseCode($e->getCode());
+        if  ($e->getMessage()) {
+            $response->setResponse($e->getMessage());
+        }
     }
     $response->displayResponse();
 }

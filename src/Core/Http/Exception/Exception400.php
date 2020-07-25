@@ -4,10 +4,10 @@ namespace SunFinance\Core\Http\Exception;
 
 use SunFinance\Core\Http\AbstractResponse;
 
-class Exception404 extends BaseException {
+class Exception400 extends BaseException {
 
     /**
-     * Exception404 constructor.
+     * Exception400 constructor.
      *
      * @param mixed $message
      */
@@ -15,7 +15,7 @@ class Exception404 extends BaseException {
     {
         parent::__construct(
             $message ? json_encode($message) : '',
-            AbstractResponse::RESPONSE_NOT_FOUND
+            AbstractResponse::RESPONSE_BAD_REQUEST
         );
     }
 }
