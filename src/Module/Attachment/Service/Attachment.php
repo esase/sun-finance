@@ -42,6 +42,25 @@ class Attachment
      * @return array|bool
      * @throws Exception
      */
+    public function findOneByDocumentId(int $id)
+    {
+        $sth = $this->dbService->getConnection()->prepare(
+            'SELECT * FROM attachments WHERE documentId = :id'
+        );
+        $sth->bindValue(':id', $id, PDO::PARAM_INT);
+        $sth->execute();
+
+        $result = $sth->fetch(PDO::FETCH_ASSOC);
+
+        return $result ? $this->processAttachment($result) : false;
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return array|bool
+     * @throws Exception
+     */
     public function findOne(int $id)
     {
         $sth = $this->dbService->getConnection()->prepare(
@@ -52,13 +71,7 @@ class Attachment
 
         $result = $sth->fetch(PDO::FETCH_ASSOC);
 
-        if ($result) {
-            $result['file'] = $this->fileService->getFileUrl(
-                $this->getAttachmentDir($id) . $result['file']
-            );
-        }
-
-        return $result;
+        return $result ? $this->processAttachment($result) : false;
     }
 
     /**
@@ -116,5 +129,20 @@ class Attachment
     protected function getAttachmentDir(int $attachmentId = null): string
     {
         return self::FILES_DIR . '/' . ($attachmentId ? $attachmentId . '/' : '');
+    }
+
+    /**
+     * @param array $attachment
+     *
+     * @return array
+     * @throws Exception
+     */
+    protected function processAttachment(array $attachment)
+    {
+        $attachment['file'] = $this->fileService->getFileUrl(
+            $this->getAttachmentDir($attachment['id']) . $attachment['file']
+        );
+
+        return $attachment;
     }
 }

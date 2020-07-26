@@ -53,16 +53,31 @@ class Attachment
         $this->documentService = $documentService;
     }
 
-    public function view()
+    /**
+     * @return array
+     * @throws Exception
+     */
+    public function view(): array
     {
-        return 'a';
+        $documentId = (int) $this->request->getUriParam('id');
+
+        $attachment = $this->service->findOneByDocumentId($documentId);
+
+        if (!$attachment) {
+            throw new Exception404();
+        }
+
+        return $attachment;
     }
 
     /**
+     * @return array
      * @throws Exception400
+     * @throws Exception404
+     * @throws Exception409
      * @throws Exception
      */
-    public function create()
+    public function create(): array
     {
         $documentId = (int) $this->request->getUriParam('id');
 
@@ -94,5 +109,4 @@ class Attachment
             $form->getErrors()
         );
     }
-
 }
