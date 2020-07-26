@@ -97,6 +97,10 @@ class Form
                         $this->formErrors[] = $validator->getErrorMessage(
                             $element
                         );
+
+                        if ($validator->breakChainOfValidators()) {
+                            break;
+                        }
                     }
                 }
             }

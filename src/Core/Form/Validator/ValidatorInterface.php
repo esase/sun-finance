@@ -12,6 +12,11 @@ interface ValidatorInterface
     public function isValid($value): bool;
 
     /**
+     * @return bool
+     */
+    public function breakChainOfValidators(): bool;
+
+    /**
      * @param string $elementName
      *
      * @return string

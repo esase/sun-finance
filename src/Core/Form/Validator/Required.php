@@ -32,6 +32,14 @@ class Required implements ValidatorInterface
      */
     public function getErrorMessage(string $elementName): string
     {
-        return $elementName . ' must be filled';
+        return '`' . $elementName . '` must be filled';
+    }
+
+    /**
+     * @return bool
+     */
+    public function breakChainOfValidators(): bool
+    {
+        return true;
     }
 }
