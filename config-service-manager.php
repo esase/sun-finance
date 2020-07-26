@@ -2,6 +2,7 @@
 
 use SunFinance\Core\Http;
 use SunFinance\Core\Mvc;
+use SunFinance\Core\Event;
 use SunFinance\Core\Db;
 use SunFinance\Core\Config;
 use SunFinance\Core\File;
@@ -15,8 +16,9 @@ return [
     Mvc\Router::class                               => Mvc\Factory\RouterFactory::class,
     Config\ConfigService::class                     => Config\Factory\ConfigServiceFactory::class,
     Db\DbService::class                             => Db\Factory\DbServiceFactory::class,
-    File\LocalFileService::class                   => File\Factory\LocalFileServiceFactory::class,
-    File\FileServiceInterface::class               => File\Factory\FileServiceFactory::class,
+    File\LocalFileService::class                    => File\Factory\LocalFileServiceFactory::class,
+    File\FileServiceInterface::class                => File\Factory\FileServiceFactory::class,
+    Event\EventManager::class                       => Event\Factory\EventManagerFactory::class,
 
     // controller
     Module\Base\Controller\NotFound::class          => InvokableFactory::class,
@@ -30,4 +32,7 @@ return [
     // form
     Module\Document\Form\DocumentBuilder::class     => Module\Document\Form\Factory\DocumentBuilderFactory::class,
     Module\Attachment\Form\AttachmentBuilder::class => Module\Attachment\Form\Factory\AttachmentBuilderFactory::class,
+
+    // event
+    Module\Attachment\Event\Attachment::class       => Module\Attachment\Event\Factory\AttachmentFactory::class
 ];

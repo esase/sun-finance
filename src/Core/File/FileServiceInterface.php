@@ -22,4 +22,11 @@ interface FileServiceInterface
      * @return string
      */
     public function getFileUrl(string $path): string;
+
+    /**
+     * @param string $path
+     *
+     * @return mixed
+     */
+    public function deleteFile(string $path);
 }

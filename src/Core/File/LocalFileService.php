@@ -70,4 +70,36 @@ class LocalFileService implements FileServiceInterface
     {
         return $this->request->getHost() . '/' . $this->dataDir . $path;
     }
+
+    /**
+     * @param string $path
+     */
+    public function deleteFile(string $path)
+    {
+        $pathToDelete = $this->dataDir . $path;
+
+        // scan for files
+        if (is_dir($pathToDelete)) {
+            $objects = scandir($pathToDelete);
+
+            foreach ($objects as $object) {
+                if ($object != '.' && $object != '..') {
+                    if (is_dir($pathToDelete . DIRECTORY_SEPARATOR . $object)
+                        && !is_link($pathToDelete . '/' . $object)) {
+                        $this->deleteFile(
+                            $path . DIRECTORY_SEPARATOR . $object
+                        );
+                    } else {
+                        unlink($pathToDelete . DIRECTORY_SEPARATOR . $object);
+                    }
+                }
+            }
+
+            rmdir($pathToDelete);
+
+            return;
+        }
+
+        unlink($pathToDelete);
+    }
 }

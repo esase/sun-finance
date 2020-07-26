@@ -12,5 +12,6 @@ return [
     'data_dir'        => 'data/',
     'response'        => 'json',
     'routes'          => require_once 'config-router.php',
-    'service_manager' => require_once 'config-service-manager.php'
+    'service_manager' => require_once 'config-service-manager.php',
+    'event'           => require_once 'config-event.php'
 ];

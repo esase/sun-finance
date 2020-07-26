@@ -39,6 +39,28 @@ class Attachment
     /**
      * @param int $id
      *
+     * @throws Exception
+     */
+    public function deleteOneByDocumentId(int $id)
+    {
+        $attachment = $this->findOneByDocumentId($id);
+
+        if ($attachment) {
+            $sth = $this->dbService->getConnection()->prepare(
+                'DELETE FROM attachments WHERE documentId = :id'
+            );
+            $sth->bindValue(':id', $id, PDO::PARAM_INT);
+            $sth->execute();
+
+            $this->fileService->deleteFile(
+                $this->getAttachmentDir($attachment['id'])
+            );
+        }
+    }
+
+    /**
+     * @param int $id
+     *
      * @return array|bool
      * @throws Exception
      */

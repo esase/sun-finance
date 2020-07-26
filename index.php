@@ -1,5 +1,6 @@
 <?php
 
+use SunFinance\Core\Event;
 use SunFinance\Core\Http;
 use SunFinance\Core\Mvc;
 use SunFinance\Module;
@@ -14,6 +15,22 @@ try {
         require_once 'config.php'
     );
 
+    /** @var Config\ConfigService $configService */
+    $configService = $serviceManager->getInstance(Config\ConfigService::class);
+
+    // init the event manager
+    /** @var  Event\EventManager $eventManager */
+    $eventManager = $serviceManager->getInstance(Event\EventManager::class);
+    foreach ($configService->getConfig('event') as $eventName => $subscribers) {
+        foreach ($subscribers as $className => $action) {
+            $eventManager->subscribe(
+                $eventName,
+                $className,
+                $action
+            );
+        }
+    }
+
     // init the router
     /** @var  Mvc\Router $router */
     $router = $serviceManager->getInstance(Mvc\Router::class);
@@ -25,9 +42,6 @@ try {
             ]
         )
     );
-
-    /** @var Config\ConfigService $configService */
-    $configService = $serviceManager->getInstance(Config\ConfigService::class);
 
     // register routes
     foreach ($configService->getConfig('routes') as $route) {
@@ -53,7 +67,18 @@ try {
 
     // process the response
     try {
-        $response->setResponse($controller->{$route->getAction()}());
+        $eventManager->trigger(Event\Event::BEFORE_CALLING_CONTROLLER, [
+            'controller' => $route->getController(),
+            'action' => $route->getAction(),
+            'params' => $route->getUriParams(),
+        ]);
+        $result = $controller->{$route->getAction()}();
+        $eventManager->trigger(Event\Event::AFTER_CALLING_CONTROLLER, [
+            'controller' => $route->getController(),
+            'action' => $route->getAction(),
+            'result' => $result
+        ]);
+        $response->setResponse($result);
     }
     catch (Http\Exception\BaseException $e) {
         $response->setResponseCode($e->getCode());

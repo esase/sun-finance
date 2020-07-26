@@ -1,0 +1,9 @@
+<?php
+
+namespace SunFinance\Core\Event;
+
+class Event
+{
+    const BEFORE_CALLING_CONTROLLER = 'CORE:BEFORE_CALLING_CONTROLLER';
+    const AFTER_CALLING_CONTROLLER = 'CORE:AFTER_CALLING_CONTROLLER';
+}
