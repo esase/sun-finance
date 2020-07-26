@@ -2,3 +2,5 @@ vendor/
 .DS_Store
 .idea/
 composer.phar
+data/*
+!data/attachments/.htaccess
