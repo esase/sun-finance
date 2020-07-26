@@ -7,6 +7,7 @@ use SunFinance\Core\ServiceManager\ServiceManager;
 use SunFinance\Module\Attachment\Controller\Attachment;
 use SunFinance\Module\Attachment\Service;
 use SunFinance\Module\Attachment\Form;
+use SunFinance\Module\Document\Service as DocumentService;
 use Exception;
 
 class AttachmentFactory
@@ -28,10 +29,14 @@ class AttachmentFactory
         /** @var Form\AttachmentBuilder $formBuilder */
         $formBuilder = $serviceManager->getInstance(Form\AttachmentBuilder::class);
 
+        /** @var  DocumentService\Document $documentService */
+        $documentService = $serviceManager->getInstance(DocumentService\Document::class);
+
         return new Attachment(
             $request,
             $service,
-            $formBuilder
+            $formBuilder,
+            $documentService
         );
     }
 }

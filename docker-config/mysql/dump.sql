@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: db
--- Generation Time: Jul 24, 2020 at 11:00 AM
+-- Generation Time: Jul 26, 2020 at 10:39 AM
 -- Server version: 5.7.28
 -- PHP Version: 7.2.25
 
@@ -19,8 +19,20 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `sun_finance`
+-- Database: `sun-finance-db`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `attachments`
+--
+
+CREATE TABLE `attachments` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `documentId` int(10) UNSIGNED NOT NULL,
+  `file` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -35,16 +47,15 @@ CREATE TABLE `documents` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `documents`
---
-
-INSERT INTO `documents` (`id`, `title`, `body`) VALUES
-(1, 'sample document title #1', 'sample document desc #1'),
-(2, 'sample document title #2', 'sample document desc #2');
-
---
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `attachments`
+--
+ALTER TABLE `attachments`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `documentId` (`documentId`);
 
 --
 -- Indexes for table `documents`
@@ -57,10 +68,16 @@ ALTER TABLE `documents`
 --
 
 --
+-- AUTO_INCREMENT for table `attachments`
+--
+ALTER TABLE `attachments`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `documents`
 --
 ALTER TABLE `documents`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

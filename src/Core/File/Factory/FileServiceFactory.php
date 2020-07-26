@@ -1,10 +1,10 @@
 <?php
 
-namespace SunFinance\Core\Utils\Factory;
+namespace SunFinance\Core\File\Factory;
 
 use SunFinance\Core\ServiceManager\ServiceManager;
-use SunFinance\Core\Utils\FileServiceInterface;
-use SunFinance\Core\Utils\LocalFileService;
+use SunFinance\Core\File\FileServiceInterface;
+use SunFinance\Core\File\LocalFileService;
 use Exception;
 
 class FileServiceFactory

@@ -3,9 +3,12 @@
 namespace SunFinance\Module\Attachment\Controller;
 
 use SunFinance\Core\Http\Exception\Exception400;
+use SunFinance\Core\Http\Exception\Exception404;
+use SunFinance\Core\Http\Exception\Exception409;
 use SunFinance\Core\Http\Request;
 use SunFinance\Module\Attachment\Service;
 use SunFinance\Module\Attachment\Form;
+use SunFinance\Module\Document\Service as DocumentService;
 use Exception;
 
 class Attachment
@@ -26,20 +29,28 @@ class Attachment
     private $formBuilder;
 
     /**
+     * @var DocumentService\Document
+     */
+    private $documentService;
+
+    /**
      * Attachment constructor.
      *
-     * @param Request                $request
-     * @param Service\Attachment     $service
-     * @param Form\AttachmentBuilder $formBuilder
+     * @param Request                  $request
+     * @param Service\Attachment       $service
+     * @param Form\AttachmentBuilder   $formBuilder
+     * @param DocumentService\Document $documentService
      */
     public function __construct(
         Request $request,
         Service\Attachment $service,
-        Form\AttachmentBuilder $formBuilder
+        Form\AttachmentBuilder $formBuilder,
+        DocumentService\Document $documentService
     ) {
         $this->request = $request;
         $this->service = $service;
         $this->formBuilder = $formBuilder;
+        $this->documentService = $documentService;
     }
 
     public function view()
@@ -53,7 +64,17 @@ class Attachment
      */
     public function create()
     {
-        $id = (int) $this->request->getUriParam('id');
+        $documentId = (int) $this->request->getUriParam('id');
+
+        // check if there is a document
+        if (!$this->documentService->findOne($documentId)) {
+            throw new Exception404('Document is missing');
+        }
+
+        // check if there is an uploaded attachment
+        if ($this->service->isExist($documentId)) {
+            throw new Exception409('Attachment is already uploaded');
+        }
 
         // init the form
         $form = $this->formBuilder->initializeForm();
@@ -62,11 +83,11 @@ class Attachment
         // create a new attachment
         if ($form->isValid()) {
             $attachmentId = $this->service->create(
-                $id,
+                $documentId,
                 $form->getValue(Form\AttachmentBuilder::FILE)
             );
-//
-//            return $this->service->findOne($documentId);
+
+            return $this->service->findOne($attachmentId);
         }
 
         throw new Exception400(

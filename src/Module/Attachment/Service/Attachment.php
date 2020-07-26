@@ -3,14 +3,14 @@
 namespace SunFinance\Module\Attachment\Service;
 
 use SunFinance\Core\Db\DbService;
-use SunFinance\Core\Utils\FileServiceInterface;
+use SunFinance\Core\File\FileServiceInterface;
 use Exception;
 use PDO;
 
 class Attachment
 {
     const FILES_DIR = 'attachment';
-    const FILES_PDF = '.pdf';
+    const FILES_EXTENSION = '.pdf';
 
     /**
      * @var DbService
@@ -37,6 +37,47 @@ class Attachment
     }
 
     /**
+     * @param int $id
+     *
+     * @return array|bool
+     * @throws Exception
+     */
+    public function findOne(int $id)
+    {
+        $sth = $this->dbService->getConnection()->prepare(
+            'SELECT * FROM attachments WHERE id = :id'
+        );
+        $sth->bindValue(':id', $id, PDO::PARAM_INT);
+        $sth->execute();
+
+        $result = $sth->fetch(PDO::FETCH_ASSOC);
+
+        if ($result) {
+            $result['file'] = $this->fileService->getFileUrl(
+                $this->getAttachmentDir($id) . $result['file']
+            );
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param int $documentId
+     *
+     * @return bool
+     */
+    public function isExist(int $documentId): bool
+    {
+        $sth = $this->dbService->getConnection()->prepare(
+            'SELECT COUNT(*) FROM attachments WHERE documentId = :id'
+        );
+        $sth->bindValue(':id', $documentId, PDO::PARAM_INT);
+        $sth->execute();
+
+        return $sth->fetchColumn() > 0;
+    }
+
+    /**
      * @param int   $documentId
      * @param array $file
      *
@@ -46,7 +87,7 @@ class Attachment
     public function create(int $documentId, array $file): int
     {
         // generate a new file name
-        $fileName = time() . self::FILES_PDF;
+        $fileName = time() . self::FILES_EXTENSION;
 
         $sth = $this->dbService->getConnection()->prepare(
             'INSERT INTO attachments SET documentId = :documentId, file = :file'

@@ -1,9 +1,10 @@
 <?php
 
-namespace SunFinance\Core\Utils;
+namespace SunFinance\Core\File;
 
 use SunFinance\Core\Config\ConfigService;
 use Exception;
+use SunFinance\Core\Http\Request;
 
 class LocalFileService implements FileServiceInterface
 {
@@ -20,15 +21,24 @@ class LocalFileService implements FileServiceInterface
     private $dataDir;
 
     /**
+     * @var Request
+     */
+    private $request;
+
+    /**
      * FileService constructor.
      *
      * @param ConfigService $configService
+     * @param Request       $request
      *
      * @throws Exception
      */
-    public function __construct(ConfigService $configService)
-    {
+    public function __construct(
+        ConfigService $configService,
+        Request $request
+    ) {
         $this->configService = $configService;
+        $this->request = $request;
         $this->dataDir = $this->configService->getConfig('data_dir');
     }
 
@@ -49,5 +59,15 @@ class LocalFileService implements FileServiceInterface
         }
 
         return move_uploaded_file($from, $to);
+    }
+
+    /**
+     * @param string $path
+     *
+     * @return string
+     */
+    public function getFileUrl(string $path): string
+    {
+        return $this->request->getHost() . '/' . $this->dataDir . $path;
     }
 }

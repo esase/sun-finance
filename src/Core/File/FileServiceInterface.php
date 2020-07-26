@@ -1,6 +1,6 @@
 <?php
 
-namespace SunFinance\Core\Utils;
+namespace SunFinance\Core\File;
 
 use Exception;
 
@@ -15,4 +15,11 @@ interface FileServiceInterface
      * @throws Exception
      */
     public function moveUploadedFile(string $from, string $to): bool;
+
+    /**
+     * @param string $path
+     *
+     * @return string
+     */
+    public function getFileUrl(string $path): string;
 }

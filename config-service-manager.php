@@ -4,7 +4,7 @@ use SunFinance\Core\Http;
 use SunFinance\Core\Mvc;
 use SunFinance\Core\Db;
 use SunFinance\Core\Config;
-use SunFinance\Core\Utils;
+use SunFinance\Core\File;
 use SunFinance\Module;
 use SunFinance\Core\ServiceManager\Factory\InvokableFactory;
 
@@ -15,8 +15,8 @@ return [
     Mvc\Router::class                               => Mvc\Factory\RouterFactory::class,
     Config\ConfigService::class                     => Config\Factory\ConfigServiceFactory::class,
     Db\DbService::class                             => Db\Factory\DbServiceFactory::class,
-    Utils\LocalFileService::class                   => Utils\Factory\LocalFileServiceFactory::class,
-    Utils\FileServiceInterface::class               => Utils\Factory\FileServiceFactory::class,
+    File\LocalFileService::class                   => File\Factory\LocalFileServiceFactory::class,
+    File\FileServiceInterface::class               => File\Factory\FileServiceFactory::class,
 
     // controller
     Module\Base\Controller\NotFound::class          => InvokableFactory::class,

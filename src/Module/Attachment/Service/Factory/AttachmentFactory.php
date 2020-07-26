@@ -4,7 +4,7 @@ namespace SunFinance\Module\Attachment\Service\Factory;
 
 use SunFinance\Core\Db\DbService;
 use SunFinance\Core\ServiceManager\ServiceManager;
-use SunFinance\Core\Utils\FileServiceInterface;
+use SunFinance\Core\File\FileServiceInterface;
 use SunFinance\Module\Attachment\Service\Attachment;
 use Exception;
 

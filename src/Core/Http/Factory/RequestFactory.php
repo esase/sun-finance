@@ -17,7 +17,8 @@ class RequestFactory
         return new Request(
             ($_SERVER['REQUEST_URI'] ?? ''),
             ($_SERVER['REQUEST_METHOD'] ?? ''),
-            ($_SERVER['SCRIPT_NAME'] ?? '')
+            ($_SERVER['SCRIPT_NAME'] ?? ''),
+            ($_SERVER['HTTP_HOST'] ?? '')
         );
     }
 }

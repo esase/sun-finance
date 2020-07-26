@@ -1,10 +1,11 @@
 <?php
 
-namespace SunFinance\Core\Utils\Factory;
+namespace SunFinance\Core\File\Factory;
 
 use SunFinance\Core\Config\ConfigService;
+use SunFinance\Core\Http\Request;
 use SunFinance\Core\ServiceManager\ServiceManager;
-use SunFinance\Core\Utils\LocalFileService;
+use SunFinance\Core\File\LocalFileService;
 use Exception;
 
 class LocalFileServiceFactory
@@ -20,8 +21,12 @@ class LocalFileServiceFactory
         /** @var  ConfigService $configService */
         $configService = $serviceManager->getInstance(ConfigService::class);
 
+        /** @var  Request $request */
+        $request = $serviceManager->getInstance(Request::class);
+
         return new LocalFileService(
-            $configService
+            $configService,
+            $request
         );
     }
 }

@@ -35,6 +35,11 @@ class Request
     private $uriParams = [];
 
     /**
+     * @var string
+     */
+    private $host;
+
+    /**
      * Request constructor.
      *
      * @param string $uri
@@ -44,11 +49,13 @@ class Request
     public function __construct(
         string $uri,
         string $method,
-        string $scriptName
+        string $scriptName,
+        string $host
     ) {
         $this->uri = $uri;
         $this->method = $method;
         $this->scriptName = $scriptName;
+        $this->host = $host;
     }
 
     /**
@@ -73,6 +80,14 @@ class Request
     public function getMethod(): string
     {
         return $this->method;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHost(): string
+    {
+        return $this->host;
     }
 
     /**
