@@ -4,5 +4,3 @@ vendor/
 composer.phar
 data/*
 !data/.htaccess
-data/attachments/*
-!data/attachments/.htaccess

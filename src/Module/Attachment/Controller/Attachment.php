@@ -6,6 +6,7 @@ use SunFinance\Core\Http\Exception\Exception400;
 use SunFinance\Core\Http\Request;
 use SunFinance\Module\Attachment\Service;
 use SunFinance\Module\Attachment\Form;
+use Exception;
 
 class Attachment
 {
@@ -48,9 +49,12 @@ class Attachment
 
     /**
      * @throws Exception400
+     * @throws Exception
      */
     public function create()
     {
+        $id = (int) $this->request->getUriParam('id');
+
         // init the form
         $form = $this->formBuilder->initializeForm();
         $form->populateValues($_FILES);
@@ -58,6 +62,7 @@ class Attachment
         // create a new attachment
         if ($form->isValid()) {
             $attachmentId = $this->service->create(
+                $id,
                 $form->getValue(Form\AttachmentBuilder::FILE)
             );
 //

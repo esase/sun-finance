@@ -4,6 +4,7 @@ namespace SunFinance\Module\Attachment\Service\Factory;
 
 use SunFinance\Core\Db\DbService;
 use SunFinance\Core\ServiceManager\ServiceManager;
+use SunFinance\Core\Utils\FileServiceInterface;
 use SunFinance\Module\Attachment\Service\Attachment;
 use Exception;
 
@@ -19,8 +20,13 @@ class AttachmentFactory
     {
         /** @var  DbService $dbService */
         $dbService = $serviceManager->getInstance(DbService::class);
+
+        /** @var  FileServiceInterface $fileService */
+        $fileService = $serviceManager->getInstance(FileServiceInterface::class);
+
         return new Attachment(
-            $dbService
+            $dbService,
+            $fileService
         );
     }
 }
