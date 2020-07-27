@@ -46,7 +46,7 @@ class Document
     /**
      * @return array
      */
-    public function list()
+    public function list(): array
     {
         return $this->service->findAll();
     }
@@ -56,7 +56,7 @@ class Document
      * @throws Exception404
      * @throws Exception
      */
-    public function view()
+    public function view(): array
     {
         $id = (int) $this->request->getUriParam('id');
         $document = $this->service->findOne($id);
