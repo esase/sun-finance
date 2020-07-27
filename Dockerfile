@@ -9,7 +9,8 @@ RUN apt-get install -y \
     libpng-dev libxpm-dev \
     libfreetype6-dev \
     git \ 
-    curl
+    curl \
+    poppler-utils
 
 RUN docker-php-ext-configure gd \
     --with-gd \

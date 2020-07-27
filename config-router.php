@@ -46,5 +46,29 @@ return [
         'uri'         => '|^/documents/(?P<id>\d+)/attachment$|i',
         'uri_params'  => ['id'],
         'type'        => Mvc\Route::TYPE_REGEXP
+    ],
+    [
+        'controller'  => Module\Attachment\Controller\Attachment::class,
+        'action_list' => [
+            Http\Request::METHOD_GET  => 'imagesView',
+        ],
+        'method_list' => [
+            Http\Request::METHOD_GET
+        ],
+        'uri'         => '|^/documents/(?P<id>\d+)/attachment/previews$|i',
+        'uri_params'  => ['id'],
+        'type'        => Mvc\Route::TYPE_REGEXP
+    ],
+    [
+        'controller'  => Module\Attachment\Controller\Attachment::class,
+        'action_list' => [
+            Http\Request::METHOD_GET  => 'imageView',
+        ],
+        'method_list' => [
+            Http\Request::METHOD_GET
+        ],
+        'uri'         => '|^/documents/(?P<id>\d+)/attachment/previews/(?P<imageId>\d+)$|i',
+        'uri_params'  => ['id', 'imageId'],
+        'type'        => Mvc\Route::TYPE_REGEXP
     ]
 ];

@@ -3,14 +3,16 @@
 namespace SunFinance\Module\Attachment\Service;
 
 use SunFinance\Core\Db\DbService;
-use SunFinance\Core\File\FileServiceInterface;
+use SunFinance\Core\File\LocalFileService;
 use Exception;
 use PDO;
 
 class Attachment
 {
     const FILES_DIR = 'attachment';
+    const IMAGES_DIR = 'images';
     const FILES_EXTENSION = '.pdf';
+    const IMAGES_EXTENSION = 'jpg';
 
     /**
      * @var DbService
@@ -18,22 +20,22 @@ class Attachment
     private $dbService;
 
     /**
-     * @var FileServiceInterface
+     * @var LocalFileService
      */
-    private $fileService;
+    private $localFileService;
 
     /**
      * Documents constructor.
      *
-     * @param DbService     $dbService
-     * @param FileServiceInterface   $fileService
+     * @param DbService        $dbService
+     * @param LocalFileService $fileService
      */
     public function __construct(
         DbService $dbService,
-        FileServiceInterface $fileService
+        LocalFileService $fileService
     ) {
         $this->dbService = $dbService;
-        $this->fileService = $fileService;
+        $this->localFileService = $fileService;
     }
 
     /**
@@ -52,7 +54,7 @@ class Attachment
             $sth->bindValue(':id', $id, PDO::PARAM_INT);
             $sth->execute();
 
-            $this->fileService->deleteFile(
+            $this->localFileService->deleteFile(
                 $this->getAttachmentDir($attachment['id'])
             );
         }
@@ -113,6 +115,53 @@ class Attachment
     }
 
     /**
+     * @param int $attachmentId
+     * @param int $imageId
+     *
+     * @return array
+     */
+    public function findImage(int $attachmentId, int $imageId): array
+    {
+        $images = $this->getAllImages($attachmentId);
+
+        if ($images && isset($images[$imageId])) {
+            return [
+                'id' => $imageId,
+                'url' => $this->localFileService->getFileUrl(
+                    $images[$imageId], false
+                )
+            ];
+        }
+
+        return [];
+    }
+
+    /**
+     * @param int $attachmentId
+     *
+     * @return array
+     */
+    public function findAllImages(int $attachmentId): array
+    {
+        $images = $this->getAllImages($attachmentId);
+
+        // add url
+        if ($images) {
+            array_walk($images, function (&$value, $key) {
+                $value = [
+                    'id' => $key,
+                    'url' => $this->localFileService->getFileUrl(
+                        $value,
+                        false
+                    )
+                ];
+            });
+        }
+
+        return $images;
+    }
+
+    /**
      * @param int   $documentId
      * @param array $file
      *
@@ -134,10 +183,23 @@ class Attachment
         $attachmentId = (int)$this->dbService->getConnection()->lastInsertId();
 
         // move the received file
-        $this->fileService->moveUploadedFile(
+        $this->localFileService->moveUploadedFile(
             $file['tmp_name'],
             $this->getAttachmentDir($attachmentId) . $fileName
         );
+
+        // create a directory for previews
+        $this->localFileService->createDir(
+            $this->getAttachmentDir($attachmentId, true)
+        );
+
+        // extract images from the uploaded pdf file
+        $this->localFileService->runCommand(vsprintf('pdfimages -j %s%s %s%spreview', [
+            $this->localFileService->getBaseDataDir(),
+            $this->getAttachmentDir($attachmentId) . $fileName,
+            $this->localFileService->getBaseDataDir(),
+            $this->getAttachmentDir($attachmentId, true)
+        ]));
 
         return $attachmentId;
     }
@@ -145,12 +207,21 @@ class Attachment
     /**
      * @param int|null $attachmentId
      *
+     * @param bool     $isImage
+     *
      * @return string
-     * @throws Exception
      */
-    protected function getAttachmentDir(int $attachmentId = null): string
-    {
-        return self::FILES_DIR . '/' . ($attachmentId ? $attachmentId . '/' : '');
+    protected function getAttachmentDir(
+        int $attachmentId = null,
+        $isImage = false
+    ): string {
+        $path = self::FILES_DIR . '/' . ($attachmentId ? $attachmentId . '/' : '');
+
+        if ($isImage) {
+            $path .= self::IMAGES_DIR . '/';
+        }
+
+        return $path;
     }
 
     /**
@@ -161,10 +232,25 @@ class Attachment
      */
     protected function processAttachment(array $attachment)
     {
-        $attachment['file'] = $this->fileService->getFileUrl(
+        $attachment['file'] = $this->localFileService->getFileUrl(
             $this->getAttachmentDir($attachment['id']) . $attachment['file']
         );
 
         return $attachment;
     }
+
+
+    /**
+     * @param int $attachmentId
+     *
+     * @return array
+     */
+    protected function getAllImages(int $attachmentId): array
+    {
+        return $this->localFileService->getFiles(
+            $this->getAttachmentDir($attachmentId, true),
+            [self::IMAGES_EXTENSION]
+        );
+    }
+
 }

@@ -3,8 +3,8 @@
 namespace SunFinance\Module\Attachment\Service\Factory;
 
 use SunFinance\Core\Db\DbService;
+use SunFinance\Core\File\LocalFileService;
 use SunFinance\Core\ServiceManager\ServiceManager;
-use SunFinance\Core\File\FileServiceInterface;
 use SunFinance\Module\Attachment\Service\Attachment;
 use Exception;
 
@@ -21,8 +21,8 @@ class AttachmentFactory
         /** @var  DbService $dbService */
         $dbService = $serviceManager->getInstance(DbService::class);
 
-        /** @var  FileServiceInterface $fileService */
-        $fileService = $serviceManager->getInstance(FileServiceInterface::class);
+        /** @var  LocalFileService $fileService */
+        $fileService = $serviceManager->getInstance(LocalFileService::class);
 
         return new Attachment(
             $dbService,

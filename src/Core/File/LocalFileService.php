@@ -43,6 +43,14 @@ class LocalFileService implements FileServiceInterface
     }
 
     /**
+     * @return string
+     */
+    public function getBaseDataDir(): string
+    {
+        return $this->dataDir;
+    }
+
+    /**
      * @param string $from
      * @param string $to
      *
@@ -51,11 +59,11 @@ class LocalFileService implements FileServiceInterface
      */
     public function moveUploadedFile(string $from, string $to): bool
     {
-        $to = $this->dataDir . $to;
+        $to = $this->getBaseDataDir() . $to;
 
         if (!file_exists(dirname($to))) {
             // create a new directory
-            mkdir(dirname($to), self::DIRECTORY_PERMISSIONS, true);
+            $this->createDir(dirname($to), false);
         }
 
         return move_uploaded_file($from, $to);
@@ -63,12 +71,34 @@ class LocalFileService implements FileServiceInterface
 
     /**
      * @param string $path
+     * @param bool   $addBaseDataDir
      *
      * @return string
      */
-    public function getFileUrl(string $path): string
+    public function getFileUrl(string $path, $addBaseDataDir = true): string
     {
-        return $this->request->getHost() . '/' . $this->dataDir . $path;
+        if ($addBaseDataDir) {
+            return $this->request->getHost() . '/' . $this->getBaseDataDir()
+                . $path;
+        }
+
+        return $this->request->getHost() . '/' . $path;
+    }
+
+    /**
+     * @param string $dir
+     * @param array  $onlyType
+     *
+     * @return array
+     */
+    public function getFiles(string $dir, $onlyType = []): array
+    {
+        $dir = $this->getBaseDataDir() . $dir;
+        $filter = $onlyType
+            ? '.{' . implode(',', $onlyType) . '}'
+            : '';
+
+        return glob($dir . '*' . $filter, GLOB_BRACE);
     }
 
     /**
@@ -76,7 +106,7 @@ class LocalFileService implements FileServiceInterface
      */
     public function deleteFile(string $path)
     {
-        $pathToDelete = $this->dataDir . $path;
+        $pathToDelete = $this->getBaseDataDir() . $path;
 
         // scan for files
         if (is_dir($pathToDelete)) {
@@ -101,5 +131,30 @@ class LocalFileService implements FileServiceInterface
         }
 
         unlink($pathToDelete);
+    }
+
+    /**
+     * @param string $path
+     * @param bool   $addBaseDataDir
+     *
+     * @return bool
+     */
+    public function createDir(string $path, $addBaseDataDir = true): bool
+    {
+        if ($addBaseDataDir) {
+            $path = $this->getBaseDataDir() . $path;
+        }
+
+        return mkdir($path, self::DIRECTORY_PERMISSIONS, true);
+    }
+
+    /**
+     * @param string $command
+     *
+     * @return mixed
+     */
+    public function runCommand(string $command)
+    {
+        exec($command);
     }
 }

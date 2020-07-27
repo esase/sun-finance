@@ -17,7 +17,6 @@ return [
     Config\ConfigService::class                     => Config\Factory\ConfigServiceFactory::class,
     Db\DbService::class                             => Db\Factory\DbServiceFactory::class,
     File\LocalFileService::class                    => File\Factory\LocalFileServiceFactory::class,
-    File\FileServiceInterface::class                => File\Factory\FileServiceFactory::class,
     Event\EventManager::class                       => Event\Factory\EventManagerFactory::class,
 
     // controller

@@ -71,6 +71,50 @@ class Attachment
     }
 
     /**
+     * @throws Exception404
+     * @throws Exception
+     */
+    public function imagesView(): array
+    {
+        $documentId = (int) $this->request->getUriParam('id');
+
+        $attachment = $this->service->findOneByDocumentId($documentId);
+
+        if (!$attachment) {
+            throw new Exception404();
+        }
+
+        return $this->service->findAllImages($attachment['id']);
+    }
+
+    /**
+     * @return array
+     * @throws Exception404
+     * @throws Exception
+     */
+    public function imageView(): array
+    {
+        $documentId = (int) $this->request->getUriParam('id');
+
+        $attachment = $this->service->findOneByDocumentId($documentId);
+
+        if (!$attachment) {
+            throw new Exception404();
+        }
+
+        $image =  $this->service->findImage(
+            $attachment['id'],
+            $this->request->getUriParam('imageId')
+        );
+
+        if (!$image) {
+            throw new Exception404();
+        }
+
+        return $image;
+    }
+
+    /**
      * @return array
      * @throws Exception400
      * @throws Exception404
