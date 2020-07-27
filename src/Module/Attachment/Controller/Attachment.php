@@ -84,7 +84,13 @@ class Attachment
             throw new Exception404();
         }
 
-        return $this->service->findAllImages($attachment['id']);
+        $images = $this->service->findAllImages($attachment['id']);
+
+        if (!$images) {
+            throw new Exception404();
+        }
+
+        return $images;
     }
 
     /**
